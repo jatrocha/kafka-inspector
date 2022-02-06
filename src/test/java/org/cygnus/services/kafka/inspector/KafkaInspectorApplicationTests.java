@@ -1,6 +1,8 @@
 package org.cygnus.services.kafka.inspector;
 
-import org.cygnus.services.kafka.inspector.business.*;
+import org.cygnus.services.kafka.inspector.business.Counter;
+import org.cygnus.services.kafka.inspector.business.Drainer;
+import org.cygnus.services.kafka.inspector.business.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(properties = {
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
@@ -35,6 +38,9 @@ class KafkaInspectorApplicationTests {
     @Autowired
     private Drainer drainer;
 
+    @Autowired
+    private Commands commands;
+
     @BeforeEach
     void setup() {
 
@@ -43,6 +49,18 @@ class KafkaInspectorApplicationTests {
             kafkaTemplate.send(TOPIC_NAME, "foo-" + i, "bar-" + i);
         }
 
+    }
+
+    @Test
+    void shouldExecuteCountCommand() {
+
+        assertNotNull(commands.count(TOPIC_NAME));
+    }
+
+    @Test
+    void shouldExecuteDrainCommand() {
+
+        assertNotNull(commands.drain(TOPIC_NAME));
     }
 
     @Test
